@@ -15,6 +15,7 @@ float polynomial (float x, float* poly, int degree) {
 void polynomial_expansion (float* poly, int degree,
 			   int n, float* array) {
 
+#pragma omp parallel for schedule(dynamic,1024)
   for (int i=0; i< n; ++i) {
     array[i] = polynomial (array[i], poly, degree);
   }
