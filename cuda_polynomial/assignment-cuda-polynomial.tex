@@ -1,0 +1,82 @@
+\documentclass[letter]{article}
+
+\usepackage{fullpage}
+\usepackage{url}
+\usepackage{hyperref}
+
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{graphicx}
+
+\newcommand{\question}{{\noindent \bf Question: }}
+\newcommand{\todo}[1]{{\bf #1}}
+
+
+\title{CUDA: Polynomial Expansion}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Preliminary}
+
+To use CUDA, add \texttt{module load cuda/11.2} in your \texttt{.bashrc}.% or
+%\texttt{.bash\_profile}.  %Also, if you have a \texttt{module load gcc}
+%in there, replace it with \texttt{module load gcc/5.3.0}
+
+%To submit a CUDA job manually, use \texttt{-lnodes=1:ppn=7:gpus=1} in
+%you \texttt{qsub} command. But \texttt{make bench\_gpu} will take care
+%of that.
+
+%% Processing on the GPU can be asynchronous, which can lead to time
+%% measurement of 0 seconds. Use
+%% \texttt{cudaDeviceSynchronize()} to ensure previously submitted tasks are
+%% complete. (memcpy and kernel launch are tasks.)
+
+\section{Polynomial expansion}
+
+The problem is simple. It is to compute a polynomial function $F$ of degree $d$:
+
+$$F(x) = \sum_{i=0}^d a_i x^i$$
+
+for an array of $n$ values of x.
+
+(The code for polynomial expansion on the CPU is provided.)
+
+\question Write a simple CUDA code that allocates and fill an array on
+the CPU and transfer it to the GPU. (Take array size as a parameter)
+
+\question Compute the polynomial expansion of each element of the
+array on the GPU. (Take block size and degree of the polynomial as a
+parameter.)
+
+\question Bring the results back on the CPU and confirm the GPU code
+is correct. You can test your code by running \texttt{make test} which
+will queue both CPU and GPU jobs to the cluster which will ouput
+\texttt{cputest-\textit{xyz}.out} which contains the desired answer, and
+\texttt{gputest-\textit{xyz}.out} which contain your gpu code answer.
+
+Hint: Remember to check explicitly for errors!
+
+\section{Measurements}
+
+%% \question Measure PCI-express latency. (That is the time for an array of size 1.)
+
+%% \question Measure PCI-express Bandwidth. (The initial memory copy with different sizes of the array.)
+
+%% \question Measure GPU memory bandwidth. (Exclude memory copies and use the simplest polynomial.)
+
+%% \question Measure GPU flops rating. (Exclude memory copies and use a complex polynomial.)
+
+\question Measure the runtimes of the codes with \texttt{make
+  bench} for polynomial function ofdegree 1, 10, 100, and 1000.
+
+\question Compare to the performance of the CPU implementation. You
+can compute a speedup table with \texttt{make table}, this will output
+the time and speedup in the form of a text table in \texttt{resulttable.txt}.
+Which is faster in which configuration? Why do you think that is?
+
+\end{document}
