@@ -23,14 +23,14 @@ __global__ void polynomial (float* array, float* poly, uint64_t degree, uint64_t
 
 
 void polynomial_expansion (float* poly, uint64_t degree,
-			   uint64_t n, float* array) {
+			   uint64_t n, float* array, cudaStream_t cuda_stream = 0) {
   //TODO: Write code to use the GPU here!
   //code should write the output back to array
 
   uint64_t tpb = 256;
   uint64_t blocks = n/tpb + (n%tpb != 0);
 
-  polynomial<<<blocks, tpb>>> (array, poly, degree, n);
+  polynomial<<<blocks, tpb, 0, cuda_stream>>> (array, poly, degree, n);
 
 }
 
@@ -54,8 +54,15 @@ int main (int argc, char* argv[]) {
   uint64_t degree = atol(argv[2]);
   uint64_t nbiter = 1;
 
-  float* array = new float[n];
-  float* poly = new float[degree+1];
+  //float* array = new float[n];
+  //float* poly = new float[degree+1];
+
+  float* array;
+  float* poly;
+
+  CUDAERRORMSG(cudaMallocHost((void**)&array, n*sizeof(float)));
+  CUDAERRORMSG(cudaMallocHost((void**)&poly, (degree+1)*sizeof(float)));  
+
   for (uint64_t i=0; i<n; ++i)
     array[i] = 1.;
 
@@ -100,23 +107,18 @@ int main (int argc, char* argv[]) {
 	localsize = n-offset;
       }
 
-      //std::cerr<<"chunk: "<<chunkid<<"\n"
-      //         <<"offset: "<<offset<<"\n";
       
-      CUDAERRORMSG(cudaMemcpy(stream_array_buffer[which_stream], array+offset, localsize*sizeof(float), cudaMemcpyHostToDevice));
-      polynomial_expansion (d_poly, degree, localsize, stream_array_buffer[which_stream]);
+      CUDAERRORMSG(cudaMemcpyAsync(stream_array_buffer[which_stream], array+offset, localsize*sizeof(float), cudaMemcpyHostToDevice));
+      polynomial_expansion (d_poly, degree, localsize, stream_array_buffer[which_stream], streams[which_stream]);
 
-      CUDAERRORMSG(cudaMemcpy(array+offset, stream_array_buffer[which_stream], localsize*sizeof(float), cudaMemcpyDeviceToHost));
-      //for (auto c = offset; c<offset+localsize; ++c)
-      //std::cerr<<"array["<<c<<"]: "<<array[c]<<"\n";
-      
+      CUDAERRORMSG(cudaMemcpyAsync(array+offset, stream_array_buffer[which_stream], localsize*sizeof(float), cudaMemcpyDeviceToHost));
+     
     }
   }
   
   //to trap the error from the kernel launch
   cudaDeviceSynchronize();
   CUDAERRORMSG(cudaGetLastError());
-
 
 
   //to trap the error from the kernel launch
@@ -149,8 +151,8 @@ int main (int argc, char* argv[]) {
   std::cerr<<array[0]<<std::endl;
   std::cout<<n<<" "<<degree<<" "<<totaltime.count()<<std::endl;
 
-  delete[] array;
-  delete[] poly;
+  CUDAERRORMSG(cudaFreeHost(array));
+  CUDAERRORMSG(cudaFreeHost(poly));
 
   return 0;
 }
