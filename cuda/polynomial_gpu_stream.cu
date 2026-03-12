@@ -78,15 +78,22 @@ int main (int argc, char* argv[]) {
   uint64_t chunksize = 1024;
   uint64_t nbstream = 8;
   std::vector<cudaStream_t> streams;
+  std::vector<float*> stream_array_buffer;
   for (auto i=0; i<nbstream; ++i) {
     cudaStream_t st;
     CUDAERRORMSG(cudaStreamCreate(&st));
     streams.push_back(st);
+
+    float* sb;
+    CUDAERRORMSG(cudaMalloc((void**)&sb, ((long)chunksize)*sizeof(float)));
+    stream_array_buffer.push_back(sb);
   }
   
   for (uint64_t iter = 0; iter<nbiter; ++iter) {
     auto nbchunk = (n+chunksize-1)/chunksize;
+    
     for (uint64_t chunkid=0; chunkid<nbchunk;++chunkid) {
+      auto which_stream = chunkid%nbstream;
       auto offset = chunkid*chunksize;
       auto localsize = chunksize;
       if (chunkid == nbchunk-1) {
@@ -96,10 +103,10 @@ int main (int argc, char* argv[]) {
       //std::cerr<<"chunk: "<<chunkid<<"\n"
       //         <<"offset: "<<offset<<"\n";
       
-      CUDAERRORMSG(cudaMemcpy(d_array, array+offset, localsize*sizeof(float), cudaMemcpyHostToDevice));
-      polynomial_expansion (d_poly, degree, localsize, d_array);
+      CUDAERRORMSG(cudaMemcpy(stream_array_buffer[which_stream], array+offset, localsize*sizeof(float), cudaMemcpyHostToDevice));
+      polynomial_expansion (d_poly, degree, localsize, stream_array_buffer[which_stream]);
 
-      CUDAERRORMSG(cudaMemcpy(array+offset, d_array, localsize*sizeof(float), cudaMemcpyDeviceToHost));
+      CUDAERRORMSG(cudaMemcpy(array+offset, stream_array_buffer[which_stream], localsize*sizeof(float), cudaMemcpyDeviceToHost));
       //for (auto c = offset; c<offset+localsize; ++c)
       //std::cerr<<"array["<<c<<"]: "<<array[c]<<"\n";
       
