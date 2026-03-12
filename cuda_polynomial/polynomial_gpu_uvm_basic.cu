@@ -1,8 +1,8 @@
 #include <iostream>
 #include <chrono>
+#include <numeric>
 
-
-__global__ void polynomial (float* array, float* poly, uint64_t degree, uint64_t n) {
+__global__ void polynomial (float* array, float* poly, size_t degree, size_t n) {
   long index = ((long)blockIdx.x)*blockDim.x+threadIdx.x;
 
   if (index >= n)
@@ -12,7 +12,7 @@ __global__ void polynomial (float* array, float* poly, uint64_t degree, uint64_t
 
   float out = 0.;
   float xtothepowerof = 1.;
-  for (uint64_t i=0; i<=degree; ++i) {
+  for (size_t i=0; i<=degree; ++i) {
     out += xtothepowerof*poly[i];
     xtothepowerof *= x;
   }
@@ -22,13 +22,13 @@ __global__ void polynomial (float* array, float* poly, uint64_t degree, uint64_t
 }
 
 
-void polynomial_expansion (float* poly, uint64_t degree,
-			   uint64_t n, float* array) {
+void polynomial_expansion (float* poly, size_t degree,
+			   size_t n, float* array) {
   //TODO: Write code to use the GPU here!
   //code should write the output back to array
 
-  uint64_t tpb = 256;
-  uint64_t blocks = n/tpb + (n%tpb != 0);
+  size_t tpb = 256;
+  size_t blocks = n/tpb + (n%tpb != 0);
 
   polynomial<<<blocks, tpb>>> (array, poly, degree, n);
 
@@ -50,52 +50,47 @@ int main (int argc, char* argv[]) {
      return -1;
   }
 
-  uint64_t n = atol(argv[1]); //TODO: atoi is an unsafe function
-  uint64_t degree = atol(argv[2]);
-  uint64_t nbiter = 1;
+  size_t n = atol(argv[1]); //TODO: atoi is an unsafe function
+  size_t degree = atoi(argv[2]);
+  size_t nbiter = 1;
 
-  float* array = new float[n];
-  float* poly = new float[degree+1];
-  for (uint64_t i=0; i<n; ++i)
+
+  
+  float* array;
+  float* poly;
+
+  CUDAERRORMSG(cudaMallocManaged((void**)&array, ((long)n)*sizeof(float)));
+  CUDAERRORMSG(cudaMallocManaged((void**)&poly, ((long)degree+1)*sizeof(float)));
+  
+  
+  for (size_t i=0; i<n; ++i)
     array[i] = 1.;
 
-  for (uint64_t i=0; i<degree+1; ++i)
+  for (size_t i=0; i<degree+1; ++i)
     poly[i] = 1.;
 
   
   std::chrono::time_point<std::chrono::system_clock> begin, end;
   begin = std::chrono::system_clock::now();
 
-  float* d_array;
-  float* d_poly;
-
-  CUDAERRORMSG(cudaMalloc((void**)&d_array, ((long)n)*sizeof(float)));
-  CUDAERRORMSG(cudaMalloc((void**)&d_poly, ((long)degree+1)*sizeof(float)));
-
-  CUDAERRORMSG(cudaMemcpy(d_array, array, ((long)n)*sizeof(float), cudaMemcpyHostToDevice));
-  CUDAERRORMSG(cudaMemcpy(d_poly, poly, ((long)degree+1)*sizeof(float), cudaMemcpyHostToDevice));
-
   
-  for (uint64_t iter = 0; iter<nbiter; ++iter)
-    polynomial_expansion (d_poly, degree, n, d_array);
+  for (size_t iter = 0; iter<nbiter; ++iter)
+    polynomial_expansion (poly, degree, n, array);
 
-
-
-  CUDAERRORMSG(cudaMemcpy(array, d_array, ((long)n)*sizeof(float), cudaMemcpyDeviceToHost));
-
+  cudaDeviceSynchronize(); //
+  
   //to trap the error from the kernel launch
   CUDAERRORMSG(cudaGetLastError());
 
-  CUDAERRORMSG(cudaFree(d_array));
-  CUDAERRORMSG(cudaFree(d_poly));
+  float sum = std::reduce(array, array+n);
 
   end = std::chrono::system_clock::now();
   std::chrono::duration<double> totaltime = (end-begin)/nbiter;
 
   {
     bool correct = true;
-    uint64_t ind;
-    for (uint64_t i=0; i< n; ++i) {
+    size_t ind;
+    for (size_t i=0; i< n; ++i) {
       if (fabs(array[i]-(degree+1))>0.01) {
         correct = false;
 	ind = i;
@@ -107,11 +102,14 @@ int main (int argc, char* argv[]) {
   }
   
 
-  std::cerr<<array[0]<<std::endl;
+  std::cerr<<array[0]<<" "<<sum<<std::endl;
   std::cout<<n<<" "<<degree<<" "<<totaltime.count()<<std::endl;
 
-  delete[] array;
-  delete[] poly;
+  std::cerr<<"array is "<<((uint64_t)n)*sizeof(float)/1000./1000./1000.<<" GB"<<std::endl;
+  
+  CUDAERRORMSG(cudaFree(array));
+  CUDAERRORMSG(cudaFree(poly));
+  
 
   return 0;
 }
