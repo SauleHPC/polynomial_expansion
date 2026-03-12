@@ -72,7 +72,7 @@ int main (int argc, char* argv[]) {
   CUDAERRORMSG(cudaMalloc((void**)&d_array, ((long)n)*sizeof(float)));
   CUDAERRORMSG(cudaMalloc((void**)&d_poly, ((long)degree+1)*sizeof(float)));
 
-  CUDAERRORMSG(cudaMemcpy(d_array, array, ((long)n)*sizeof(float), cudaMemcpyHostToDevice));
+
   CUDAERRORMSG(cudaMemcpy(d_poly, poly, ((long)degree+1)*sizeof(float), cudaMemcpyHostToDevice));
 
   uint64_t chunksize = 1024;
@@ -92,12 +92,25 @@ int main (int argc, char* argv[]) {
       if (chunkid == nbchunk-1) {
 	localsize = n-offset;
       }
-      polynomial_expansion (d_poly, degree, localsize, d_array+offset);
+
+      //std::cerr<<"chunk: "<<chunkid<<"\n"
+      //         <<"offset: "<<offset<<"\n";
+      
+      CUDAERRORMSG(cudaMemcpy(d_array, array+offset, localsize*sizeof(float), cudaMemcpyHostToDevice));
+      polynomial_expansion (d_poly, degree, localsize, d_array);
+
+      CUDAERRORMSG(cudaMemcpy(array+offset, d_array, localsize*sizeof(float), cudaMemcpyDeviceToHost));
+      //for (auto c = offset; c<offset+localsize; ++c)
+      //std::cerr<<"array["<<c<<"]: "<<array[c]<<"\n";
+      
     }
   }
+  
+  //to trap the error from the kernel launch
+  cudaDeviceSynchronize();
+  CUDAERRORMSG(cudaGetLastError());
 
 
-  CUDAERRORMSG(cudaMemcpy(array, d_array, ((long)n)*sizeof(float), cudaMemcpyDeviceToHost));
 
   //to trap the error from the kernel launch
   CUDAERRORMSG(cudaGetLastError());
