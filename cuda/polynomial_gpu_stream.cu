@@ -45,8 +45,8 @@ void CUDAERRORMSG(cudaError_t err) {
 int main (int argc, char* argv[]) {
   //TODO: add usage
   
-  if (argc < 3) {
-     std::cerr<<"usage: "<<argv[0]<<" n degree"<<std::endl;
+  if (argc < 5) {
+     std::cerr<<"usage: "<<argv[0]<<" n degree nbstreams chunksize"<<std::endl;
      return -1;
   }
 
@@ -73,17 +73,16 @@ int main (int argc, char* argv[]) {
   std::chrono::time_point<std::chrono::system_clock> begin, end;
   begin = std::chrono::system_clock::now();
 
-  float* d_array;
   float* d_poly;
 
-  CUDAERRORMSG(cudaMalloc((void**)&d_array, ((long)n)*sizeof(float)));
   CUDAERRORMSG(cudaMalloc((void**)&d_poly, ((long)degree+1)*sizeof(float)));
 
 
   CUDAERRORMSG(cudaMemcpy(d_poly, poly, ((long)degree+1)*sizeof(float), cudaMemcpyHostToDevice));
 
-  uint64_t chunksize = 1024;
-  uint64_t nbstream = 8;
+  uint64_t nbstream = std::atol(argv[3]);
+  uint64_t chunksize = std::atol(argv[4]);
+
   std::vector<cudaStream_t> streams;
   std::vector<float*> stream_array_buffer;
   for (auto i=0; i<nbstream; ++i) {
@@ -124,7 +123,7 @@ int main (int argc, char* argv[]) {
   //to trap the error from the kernel launch
   CUDAERRORMSG(cudaGetLastError());
 
-  CUDAERRORMSG(cudaFree(d_array));
+
   CUDAERRORMSG(cudaFree(d_poly));
 
   for (auto st: streams)
