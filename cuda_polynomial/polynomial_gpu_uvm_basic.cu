@@ -51,7 +51,7 @@ int main (int argc, char* argv[]) {
   }
 
   size_t n = atol(argv[1]); //TODO: atoi is an unsafe function
-  size_t degree = atoi(argv[2]);
+  size_t degree = atol(argv[2]);
   size_t nbiter = 1;
 
 

@@ -2,21 +2,21 @@
 #include <chrono>
 
 //
-float polynomial (float x, float* poly, int degree) {
+float polynomial (float x, float* poly, uint64_t degree) {
   float out = 0.;
   float xtothepowerof = 1.;
-  for (int i=0; i<=degree; ++i) {
+  for (uint64_t i=0; i<=degree; ++i) {
     out += xtothepowerof*poly[i];
     xtothepowerof *= x;
   }
   return out;
 }
 
-void polynomial_expansion (float* poly, int degree,
-			   int n, float* array) {
+void polynomial_expansion (float* poly, uint64_t degree,
+			   uint64_t n, float* array) {
 
 #pragma omp parallel for schedule(dynamic,1024)
-  for (int i=0; i< n; ++i) {
+  for (uint64_t i=0; i< n; ++i) {
     array[i] = polynomial (array[i], poly, degree);
   }
 }
@@ -28,23 +28,23 @@ int main (int argc, char* argv[]) {
      return -1;
   }
 
-  int n = atoi(argv[1]); //TODO: atoi is an unsafe function
-  int degree = atoi(argv[2]);
-  int nbiter = 1;
+  uint64_t n = atol(argv[1]); //TODO: atoi is an unsafe function
+  uint64_t degree = atol(argv[2]);
+  uint64_t nbiter = 1;
 
   float* array = new float[n];
   float* poly = new float[degree+1];
-  for (int i=0; i<n; ++i)
+  for (uint64_t i=0; i<n; ++i)
     array[i] = 1.;
 
-  for (int i=0; i<degree+1; ++i)
+  for (uint64_t i=0; i<degree+1; ++i)
     poly[i] = 1.;
 
   
   std::chrono::time_point<std::chrono::system_clock> begin, end;
   begin = std::chrono::system_clock::now();
   
-  for (int iter = 0; iter<nbiter; ++iter)
+  for (uint64_t iter = 0; iter<nbiter; ++iter)
     polynomial_expansion (poly, degree, n, array);
 
   end = std::chrono::system_clock::now();
