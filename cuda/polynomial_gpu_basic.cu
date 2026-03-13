@@ -86,9 +86,6 @@ int main (int argc, char* argv[]) {
   //to trap the error from the kernel launch
   CUDAERRORMSG(cudaGetLastError());
 
-  CUDAERRORMSG(cudaFree(d_array));
-  CUDAERRORMSG(cudaFree(d_poly));
-
   end = std::chrono::system_clock::now();
   std::chrono::duration<double> totaltime = (end-begin)/nbiter;
 
@@ -112,6 +109,9 @@ int main (int argc, char* argv[]) {
 
   delete[] array;
   delete[] poly;
+
+  CUDAERRORMSG(cudaFree(d_array));
+  CUDAERRORMSG(cudaFree(d_poly));
 
   return 0;
 }

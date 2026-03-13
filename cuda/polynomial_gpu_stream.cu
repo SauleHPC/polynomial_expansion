@@ -115,19 +115,10 @@ int main (int argc, char* argv[]) {
     }
   }
   
-  //to trap the error from the kernel launch
-  cudaDeviceSynchronize();
-  CUDAERRORMSG(cudaGetLastError());
-
-
-  //to trap the error from the kernel launch
-  CUDAERRORMSG(cudaGetLastError());
-
-
-  CUDAERRORMSG(cudaFree(d_poly));
-
-  for (auto st: streams)
-    CUDAERRORMSG(cudaStreamDestroy(st));
+  for (auto st: streams) {
+    CUDAERRORMSG(cudaStreamSynchronize(st));
+  }
+      
   
   end = std::chrono::system_clock::now();
   std::chrono::duration<double> totaltime = (end-begin)/nbiter;
@@ -152,6 +143,16 @@ int main (int argc, char* argv[]) {
 
   CUDAERRORMSG(cudaFreeHost(array));
   CUDAERRORMSG(cudaFreeHost(poly));
+
+  CUDAERRORMSG(cudaFree(d_poly));
+
+  for (auto p : stream_array_buffer) {
+    CUDAERRORMSG(cudaFree(p));
+  }
+
+  for (auto st: streams) {
+    CUDAERRORMSG(cudaStreamDestroy(st));
+  }
 
   return 0;
 }
