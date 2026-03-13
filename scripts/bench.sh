@@ -26,6 +26,19 @@ compile() {
     )
 }
 
+basics() {
+    hostname
+    cat /proc/cpuinfo
+    cat /proc/meminfo
+    uname -a
+    nvcc --version
+    gcc --version
+    
+    deviceQuery
+    UnifiedMemoryPerf
+    nvbandwidth
+}
+
 #this assumes a basic call of a binary ($1)
 #This runs on GPU_SIZES only if $2 is 'n' and on oversubscribed if $2 is 'y'
 bench_generic() {
@@ -69,6 +82,8 @@ cuda_stream_wrapper() {
     ../cuda/polynomial_gpu_stream $1 $2 16 `expr 16 \* 1024 \* 1024`
 }
 
+
+basics | tee ${OUTPUTDIR}/basics
 
 compile 2>&1 | tee ${OUTPUTDIR}/compile
 
