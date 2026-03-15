@@ -9,6 +9,9 @@ all: $(BINS)
 polynomial_gpu_basic: polynomial_gpu_basic.cu
 	nvcc $(CUDAFLAGS) $< -o $@
 
+polynomial_gpu_excluding_transfer: polynomial_gpu_excluding_transfer.cu
+	nvcc $(CUDAFLAGS) $< -o $@
+
 polynomial_gpu_pinned: polynomial_gpu_pinned.cu
 	nvcc $(CUDAFLAGS) $< -o $@
 
