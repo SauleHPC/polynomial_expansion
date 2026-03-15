@@ -5,7 +5,7 @@
 #
 #SBATCH --ntasks-per-node=32
 #SBATCH --gres=gpu:A40:1
-#SBATCH --mem=220GB
+#SBATCH --mem=220G
 #SBATCH --nodelist=str-gpu15
 
 cd ~/polynomial_expansion/scripts/
