@@ -165,7 +165,7 @@ if 'gpu_uvm_basic' in results:
     results['predict_gpu_uvm'] = th
     codes.append('predict_gpu_uvm')
     
-pdf = PdfPages(f'out-{machine}.pdf')
+pdf = PdfPages(f'analysis-{machine}.pdf')
 
 for size in arrayssizes:
     to_plot = []
