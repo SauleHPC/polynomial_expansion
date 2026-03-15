@@ -83,6 +83,11 @@ cuda_stream_wrapper() {
 }
 
 
+basic_gpu_bench() {
+    ../cuda/polynomial_gpu_excluding_transfer `expr 1 \* 1024 \* 1024 \* 1024` 0
+    ../cuda/polynomial_gpu_excluding_transfer `expr 1 \* 1024 \* 1024 \* 1024` `expr 32 \* 1024`        
+}
+
 basics | tee ${OUTPUTDIR}/basics
 
 compile 2>&1 | tee ${OUTPUTDIR}/compile
@@ -92,6 +97,10 @@ bench_generic ../cpu/polynomial n 2>&1 | tee ${OUTPUTDIR}/cpu
 bench_generic ../cpu/polynomial_openmp y 2>&1 | tee ${OUTPUTDIR}/cpu_openmp
 
 bench_generic ../cuda/polynomial_gpu_basic n 2>&1 | tee ${OUTPUTDIR}/gpu_basic
+
+bench_generic ../cuda/polynomial_gpu_pinned n 2>&1 | tee ${OUTPUTDIR}/gpu_pinned
+
+basic_gpu_bench  2>&1 | tee ${OUTPUTDIR}/basic_gpu_bench
 
 bench_generic ../cuda/polynomial_gpu_uvm_basic y 2>&1 | tee ${OUTPUTDIR}/gpu_uvm_basic
 
