@@ -1,6 +1,6 @@
 #!/bin/bash
 
-host=$1 #probably take that off commandline at some point
+host=$1
 
 
 resdir=../results/${host}/
