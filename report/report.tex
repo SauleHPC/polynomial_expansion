@@ -1,0 +1,77 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+
+\begin{document}
+
+\section{Introduction}
+
+We are trying to understand the cost of uvm hmm on a range of
+scenario. We'll look at a simple application to have a sense of the
+impact of arithmetic intensity
+
+\section{Polynomial Expansion}
+
+\subsection{Problem}
+
+You have a bunch of points $x_0, \dots, x_n$. For each you want to compute a polynomial $P(x) = \sum_{i=0}^d c_i x^i$.
+
+Note the calculation is in $\Theta(n(d+1))$, it moves $\Theta(n+d)$ memory and do $\Theta(n(d+1))$ flops.
+
+\subsection{cpu implementation}
+
+two implems.
+
+one sequential
+
+one openmp
+
+\subsection{cuda implementation}
+
+Basic implementation is pretty much what you think it is. Init on CPU,
+alloc array for x and coefficients on the gpu. Cuda memcpy the data
+over. A cuda kernel, one cuda thread per entry in the array who does
+$d+1$ muls and adds. Memcopy results back.
+
+The pinned implementation is the same. But the CPU memory is allocated
+in page-locked memory. So the cudamemcopy is faster.
+
+The stream implementation aims to get communiucation comptation
+overlap. It splits the calculation in a number of streams. Each stream
+processes many chunks of a fixed size. The stream does memcopy data
+in, launch kernel, memcpy data back.
+
+The UVM implementation allocs the memory with cudamallocmanaged which
+makes the memory managed by the uvm driver. Becasue we get gpu side
+paging, there is no memcopy, the kernel work straight out of the memory.
+
+So the basic and pinned implementations are naturally limited to GPU
+memory. While the stream and UVM implementation can process more data
+than the GPU can hold.
+
+\section{Modeling}
+
+The problem is essentially 3 phased. move data in, do the calculation,
+move data out. The move data in and out are happening on the
+interconnect (pci-e or nvlink). The calculation itself has two main
+components, how much data you need to move (roughly $\Theta(n)$) and
+how much computation you do $\Theta(nd)$. The runtime of the kernel
+itself will be defined by the bottleneck which could be either data or
+flops: $max(\frac{2n(d+1)}{gpuflops},
+\frac{2n*sizefp32}{gpumembw})$. Moving data in and out of the gpu is
+given by the time to transfer over the interconnect
+$\frac{(n+d+1)sizefp32}{interconnectBW}$
+
+Depending on the implementation you get communication/computation
+overlap or not. If you do get communication/computation overlap, the
+runtime is given by the maximum between communication time and computation time:
+
+$max(max(\frac{2n(d+1)}{gpuflops}, \frac{2n*sizefp32}{gpumembw}),\frac{(n+d+1)sizefp32}{interconnectBW})$
+
+But if there is no overlap then the two happen one after the other and
+the application time is
+
+$max(\frac{2n(d+1)}{gpuflops}, \frac{2n*sizefp32}{gpumembw}) +
+\frac{(n+d+1)sizefp32}{interconnectBW}$
+
+\end{document}
