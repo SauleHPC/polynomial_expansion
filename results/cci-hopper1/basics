@@ -6,7 +6,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.405
+cpu MHz		: 3892.749
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -34,7 +34,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3889.559
+cpu MHz		: 2700.000
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -62,7 +62,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3891.603
+cpu MHz		: 2700.000
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -90,7 +90,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.875
+cpu MHz		: 3885.646
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -118,7 +118,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.169
+cpu MHz		: 3887.327
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -146,7 +146,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3906.069
+cpu MHz		: 3891.981
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -174,7 +174,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3884.155
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -202,7 +202,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3890.585
+cpu MHz		: 3894.224
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -230,7 +230,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.347
+cpu MHz		: 2700.000
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -258,7 +258,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3893.381
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -286,7 +286,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3914.674
+cpu MHz		: 2700.000
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -342,7 +342,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3891.495
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -370,7 +370,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3894.234
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -398,7 +398,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3897.588
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -426,7 +426,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3886.271
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -454,7 +454,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3892.061
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -510,7 +510,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3885.705
+cpu MHz		: 3894.871
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -538,7 +538,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3896.307
+cpu MHz		: 3890.647
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -566,7 +566,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.343
+cpu MHz		: 3897.678
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -594,7 +594,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.885
+cpu MHz		: 3889.473
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -622,7 +622,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3889.519
+cpu MHz		: 3894.321
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -678,7 +678,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3881.996
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -706,7 +706,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3884.653
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -734,7 +734,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3881.996
+cpu MHz		: 3894.318
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -762,7 +762,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3898.548
+cpu MHz		: 3893.998
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -790,7 +790,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3895.803
+cpu MHz		: 3894.252
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -818,7 +818,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.095
+cpu MHz		: 3892.879
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -846,7 +846,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3887.133
+cpu MHz		: 3884.042
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -874,7 +874,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.087
+cpu MHz		: 3896.329
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -902,7 +902,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.476
+cpu MHz		: 3894.509
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -930,7 +930,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3895.401
+cpu MHz		: 3889.329
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -986,7 +986,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3892.848
+cpu MHz		: 2700.000
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1014,7 +1014,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.421
+cpu MHz		: 2700.000
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1070,7 +1070,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.123
+cpu MHz		: 3870.807
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1098,7 +1098,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3900.166
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1126,7 +1126,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3881.218
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1154,7 +1154,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.362
+cpu MHz		: 3891.435
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1182,7 +1182,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.943
+cpu MHz		: 3893.033
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1210,7 +1210,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3888.744
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1238,7 +1238,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3892.976
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1266,7 +1266,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.569
+cpu MHz		: 3891.420
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1294,7 +1294,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3892.433
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1322,7 +1322,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3891.137
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1350,7 +1350,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.659
+cpu MHz		: 3887.664
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1378,7 +1378,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.410
+cpu MHz		: 3896.377
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1406,7 +1406,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3891.142
+cpu MHz		: 3890.226
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1434,7 +1434,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3893.384
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1462,7 +1462,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3885.263
+cpu MHz		: 3893.617
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1490,7 +1490,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3892.157
+cpu MHz		: 3889.456
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1518,7 +1518,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.484
+cpu MHz		: 3894.158
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1546,7 +1546,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3893.825
+cpu MHz		: 3898.009
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1574,7 +1574,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.147
+cpu MHz		: 3892.601
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1602,7 +1602,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.234
+cpu MHz		: 3893.367
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1630,7 +1630,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 3894.127
+cpu MHz		: 2700.000
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1658,7 +1658,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3894.108
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1742,7 +1742,7 @@ model		: 17
 model name	: AMD EPYC 9334 32-Core Processor
 stepping	: 1
 microcode	: 0xa101148
-cpu MHz		: 2700.000
+cpu MHz		: 3891.037
 cache size	: 1024 KB
 physical id	: 0
 siblings	: 64
@@ -1792,44 +1792,44 @@ address sizes	: 52 bits physical, 57 bits virtual
 power management: ts ttp tm hwpstate cpb eff_freq_ro [13] [14]
 
 MemTotal:       391282188 kB
-MemFree:        376492392 kB
-MemAvailable:   382373764 kB
-Buffers:         1796380 kB
-Cached:          4396552 kB
-SwapCached:            0 kB
-Active:          1635488 kB
-Inactive:        5201264 kB
-Active(anon):     657912 kB
+MemFree:        375926168 kB
+MemAvailable:   382091224 kB
+Buffers:         2050196 kB
+Cached:          4406168 kB
+SwapCached:         6776 kB
+Active:          1542940 kB
+Inactive:        5451604 kB
+Active(anon):     552048 kB
 Inactive(anon):        0 kB
-Active(file):     977576 kB
-Inactive(file):  5201264 kB
+Active(file):     990892 kB
+Inactive(file):  5451604 kB
 Unevictable:       30464 kB
 Mlocked:           27392 kB
 SwapTotal:       8388604 kB
-SwapFree:        8388604 kB
+SwapFree:        8302652 kB
 Zswap:                 0 kB
 Zswapped:              0 kB
-Dirty:               180 kB
+Dirty:               620 kB
 Writeback:             0 kB
-AnonPages:        674664 kB
-Mapped:           473136 kB
-Shmem:              5140 kB
-KReclaimable:    3039652 kB
-Slab:            3778868 kB
-SReclaimable:    3039652 kB
-SUnreclaim:       739216 kB
-KernelStack:       19120 kB
-PageTables:        13808 kB
-SecPageTables:    540512 kB
+AnonPages:        567236 kB
+Mapped:           478600 kB
+Shmem:              5120 kB
+KReclaimable:    3059680 kB
+Slab:            3812300 kB
+SReclaimable:    3059680 kB
+SUnreclaim:       752620 kB
+KernelStack:       19312 kB
+PageTables:        12896 kB
+SecPageTables:    548092 kB
 NFS_Unstable:          0 kB
 Bounce:                0 kB
 WritebackTmp:          0 kB
 CommitLimit:    204029696 kB
-Committed_AS:    3849640 kB
+Committed_AS:    3903688 kB
 VmallocTotal:   13743895347199 kB
-VmallocUsed:      148028 kB
+VmallocUsed:      148096 kB
 VmallocChunk:          0 kB
-Percpu:           105984 kB
+Percpu:           109056 kB
 HardwareCorrupted:     0 kB
 AnonHugePages:         0 kB
 ShmemHugePages:        0 kB
@@ -1843,8 +1843,8 @@ HugePages_Rsvd:        0
 HugePages_Surp:        0
 Hugepagesize:       2048 kB
 Hugetlb:               0 kB
-DirectMap4k:    71428712 kB
-DirectMap2M:    212447232 kB
+DirectMap4k:    71514728 kB
+DirectMap2M:    212361216 kB
 DirectMap1G:    119537664 kB
 Linux cci-hopper1 6.14.0-37-generic #37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
 nvcc: NVIDIA (R) Cuda compiler driver
@@ -1949,13 +1949,13 @@ Overall Time For matrixMultiplyPerf
 
 Printing Average of 20 measurements in (ms)
 Size_KB	 UMhint	UMhntAs	 UMeasy	  0Copy	MemCopy	CpAsync	CpHpglk	CpPglAs
-4	  0.175	  0.183	  0.325	  0.011	  0.027	  0.023	  0.030	  0.023
-16	  0.182	  0.201	  0.510	  0.016	  0.033	  0.028	  0.036	  0.030
-64	  0.221	  0.251	  0.731	  0.035	  0.057	  0.052	  0.049	  0.044
-256	  0.386	  0.371	  1.298	  0.140	  0.128	  0.116	  0.102	  0.091
-1024	  1.089	  0.874	  2.341	  0.836	  0.407	  0.385	  0.335	  0.330
-4096	  3.465	  2.627	  8.244	  5.698	  1.548	  1.542	  1.399	  1.393
-16384	 14.951	 11.371	 34.037	 47.230	  8.291	  8.289	  7.587	  7.430
+4	  0.170	  0.179	  0.317	  0.011	  0.027	  0.023	  0.030	  0.024
+16	  0.175	  0.187	  0.512	  0.016	  0.033	  0.028	  0.036	  0.030
+64	  0.217	  0.238	  0.728	  0.036	  0.059	  0.055	  0.050	  0.043
+256	  0.379	  0.383	  1.579	  0.139	  0.128	  0.116	  0.102	  0.091
+1024	  1.087	  0.867	  2.273	  0.839	  0.416	  0.391	  0.339	  0.338
+4096	  3.457	  2.605	  8.119	  5.698	  1.574	  1.534	  1.400	  1.393
+16384	 14.908	 11.519	 33.742	 37.326	  8.427	  8.425	  7.576	  8.334
 
 NOTE: The CUDA Samples are not meant for performance measurements. Results may vary when GPU Boost is enabled.
 nvbandwidth Version: v0.8
@@ -1998,5 +1998,5 @@ memcpy CE CPU(row) <-> GPU(column) bandwidth (GB/s)
 SUM device_to_host_bidirectional_memcpy_ce 52.82
 
 Running device_to_device_memcpy_read_ce.
- Invalid value when checking the pattern at 0x7f1c1a000000
- Current offset : 63392 
+ Invalid value when checking the pattern at 0x765a66000000
+ Current offset : 107392 
