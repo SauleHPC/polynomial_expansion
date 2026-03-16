@@ -8,7 +8,10 @@
 
 We are trying to understand the cost of uvm hmm on a range of
 scenario. We'll look at a simple application to have a sense of the
-impact of arithmetic intensity
+impact of arithmetic intensity.
+
+The assumption that we are trying to confirm is that essentially UVM
+and HMM give you normal processing but at lower interconnect speed.
 
 \section{Polynomial Expansion}
 
@@ -51,6 +54,8 @@ than the GPU can hold.
 
 \section{Modeling}
 
+\subsection{A steady state model}
+
 The problem is essentially 3 phased. move data in, do the calculation,
 move data out. The move data in and out are happening on the
 interconnect (pci-e or nvlink). The calculation itself has two main
@@ -73,5 +78,32 @@ the application time is
 
 $max(\frac{2n(d+1)}{gpuflops}, \frac{2n*sizefp32}{gpumembw}) +
 \frac{(n+d+1)sizefp32}{interconnectBW}$
+
+\subsection{Modeling limitation}
+
+That model is quite flawed. It assumes that calculation enters steady
+states and so that you actually do reach a bandwidth style bottleneck
+on one of the ressource.  It assumes there is no complex interaction
+in the system that cause chain of event delays in the calculation.
+
+That assumption is probably reasonnable at large scale, the
+experimental results will confirm that.
+
+At smaller scale (smaller $n$ values) than there should be a lot more
+latency effects.
+
+\subsection{Calibrating}
+
+To use the models we'll to calibrate the flops and banwidth ratings.
+
+We'll use actual measurement from the code to calibrate. We will
+calibrate flops using a gpu only measurement for a run with a large
+degree and derive flops from that. For gpubw, we take a measurement
+with degree 0 and large $n$. And for interconnect measurment we take a
+total overlapped execution with degree 0 and large $n$.
+
+\section{Experiments}
+
+
 
 \end{document}
