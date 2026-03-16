@@ -1,6 +1,8 @@
 \documentclass{article}
 
 \usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{subcaption}
 
 \begin{document}
 
@@ -48,7 +50,7 @@ The UVM implementation allocs the memory with cudamallocmanaged which
 makes the memory managed by the uvm driver. Becasue we get gpu side
 paging, there is no memcopy, the kernel work straight out of the memory.
 
-So the basic and pinned implementations are naturally limited to GPU
+The basic and pinned implementations are naturally limited to GPU
 memory. While the stream and UVM implementation can process more data
 than the GPU can hold.
 
@@ -104,6 +106,87 @@ total overlapped execution with degree 0 and large $n$.
 
 \section{Experiments}
 
+We ran on a bunch of different machines. Here are some results on
+hopper 1 and hopper 2.
 
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=5]{analysis-cci-hopper1.pdf}
+    \caption{Hopper1, n=16B (non-oversubscribed)}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=5]{analysis-cci-hopper2.pdf}
+    \caption{Hopper2, n=16B (non-oversubscribed)}
+  \end{subfigure}
+
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=7]{analysis-cci-hopper1.pdf}
+    \caption{Hopper1, n=64B (oversubscribed)}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=6]{analysis-cci-hopper2.pdf}
+    \caption{Hopper2, n=64B (oversubscribed)}
+  \end{subfigure}
+
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=13]{analysis-cci-hopper1.pdf}
+    \caption{Hopper1, d=1024}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=12]{analysis-cci-hopper2.pdf}
+    \caption{Hopper2, d=1024}
+  \end{subfigure}
+
+  \label{fig:perf-hopper}
+  \caption{perf results on Hopper GPUs, hopper1 is x86 cpu side; hopper2 is grace.}
+\end{figure}
+
+Figure~\label{fig:perf-hopper} presents results on hopper gpus with an
+grace/nvlink configuration and a x86/pcie configuration. We present
+all performance in flops for normalization. We present both the
+performance a prediction of that performance based on the model
+described above.
+
+Some observations:
+
+The models are fairly accurate. Rarely more than 15\% off. They are
+only off on really small arrays; which make sense the size are
+probably not high enough to saturate any part of the system so you get
+latency effects and a steady state model becomes wrong.
+
+The fact that the model is accurate means that the difference in
+performance between \texttt{gpu\_uvm} and \texttt{gpu\_stream} is
+mostly explained by the difference in effective interconnect bandwidth
+experienced by UVM.
+
+With densification of arithmetic intensity, the difference between UVM
+and stream decreases and it eventually decreases to essentially no
+difference at a degree of 4098; so at 8192 flops per FP32 float; or at
+2048 flops per byte
+
+You can measure the difference in arithmetic intensity for different
+memory management model. While stream saturates gpu flops at roughly
+degree 256, you need roughly 4098 to saturate with UVM.
+
+You can see that at small $n$ values, the model is less accurate. This
+is most likely an effect of
+
+What's going on with pageable memory speed? No idea.
+
+It is interesting that we see that the peak flop performance is about
+the same between hopper1 and hopper 2. But hopper 2 show more
+performance in its interconnect, which we expect since nvlink.
+
+We also see that there is no real performance cost to
+oversubscription, the calculation is interconnect bound but the
+bandwidth is used just as effectively in undersubscribed and over
+subscribed cases.
 
 \end{document}
