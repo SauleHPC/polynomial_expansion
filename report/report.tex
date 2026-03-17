@@ -189,4 +189,132 @@ oversubscription, the calculation is interconnect bound but the
 bandwidth is used just as effectively in undersubscribed and over
 subscribed cases.
 
+\section{Discussion}
+
+\subsection{UVM is not a good option for steam type applications}
+
+Polynomial expansion is a decent representative for all kind of
+streaming applications. By streaming application, we mean applications
+with very simple data access pattern. Data come in, some calculation
+is done, data come out; and is never seen again.
+
+On these applications, UVM will perform well in both undersubscribed
+and oversubscribed cases as long as the arithmetic intensity of the
+calculation is high enough to overlap the slower memory access times.
+
+Though there is no real benefit to UVM here. UVM is often quoted as
+being simpler to write than explicit memory management. But the
+implementation in different cuda streams is not much more
+complicated. And most likely, the implementation will use a middleware
+like OpenMP or Kokkos. Even if writing raw cuda, any LLM will surely
+one shot this as it is a textbook technique really.
+
+If the application was a bit more complicated. Maybe composed of a
+sequence of kernels in between the memcopies like some computational
+pipeline. In undersubscribed cases, that should perform about the same
+as a single kernel like polynomial expansion.  But in an
+oversubscribed case, the data would flow multiple times in the CUDA
+cores, and since the dataset does not fit in GPU memory, it will all
+be accessed from the host each time. This would be significantly
+slower than a stream based implementation.
+
+\subsection{What would an application need to be like for UVM to make sense}
+
+The access pattern in polynomial expansion is so simple that it is
+accesses all the data in a quite regular pattern. So it is easy for
+the programmer to decompose the problem in chunks that can be
+streamed. But even for problems that are not that regular, the
+streaming codes should still easily be implemented.
+
+Consider dense matrix-matrix multiplication (gemm). The data is used
+multiple times but the pattern is well understood. Even in an
+oversubscribed setting, you can use tile or striped implementation of
+gemm and leverage cuda streams to overlap the data transfer and the
+computation. And yes, maybe you would need a more careful task graph
+based approach to the problem to derive the most performance. But
+regardless UVM would not be a good solution for performance without
+some smarter scheduling of the calculation.
+
+So what remains? For undersubscribed cases, all applications where
+possibly not all the data will be accessed and it is non trivial to
+know which data will be accessed. For oversubscribed cases, the data
+access has to be irregular and possibly hard to predict.
+
+\subsection{Some idea of use cases}
+
+\paragraph{BFS in a large graph}
+The graph is larger than memory, you want to do BFS to find a path to
+a particular vertex. Once that vertex is found, you can abort the
+BFS. In an application like this, you would not use the whole
+graph. So even if the graph fits in memory, you don't need to bring the
+whole graph. If the graph is bigger than memroy, then this even
+applies on repeated queries.
+
+There is not much a explicit memory managed implementation can do
+here. To figure out which piece of the graph will be relevant, you
+kind of need to do BFS.
+
+\paragraph{Local graph computation}
+Some graph queries are essentially very localized in the graph. Think
+of locrank from the advisor's papers with Haofeng. You have a graph,
+you get a query as some of the vertices of the graph and you want to
+do a biased page rank where teleport probability is only distributed
+to query vertices. We showed that you can essentially only consider
+the vertices within a fixed distance from te query (within 2 hops).
+
+In an oversubscribed setting, the only reasonnable solution would be
+to have a pre-partitioned graph and only load the parts with the
+queries are. You would probably also need the neighboring parts. The
+parts can't be that small or you would get very little reuse and
+patching the graphs back would be pretty costly.
+
+Also closeness/betweenness? As you go through the graph in layers, you
+don't know where the vertices will fall, so it is hard to
+predict. Also in betwenness the sigma, delta, and distance vectors are
+used in wave pattern that could be good for memory locality.
+
+\paragraph{Cache}
+Any application where you are computing something but some of the
+values are precomputed and cached to avoir recomputation would have
+possibly this type of structure. If the cache and the data computed
+both need to fit in gpu memory, then this limits the problem size you
+can do. So one might prefer storing them in UVM memory so that the
+cache get dynamically loaded in GPU memory.
+
+There are two kinds applications I think about here. I'm thinking
+physics calculatino where you assemble values from small
+parts. Something like MFDn phase 1.
+
+Something else might be dynamic programming applications.  It also
+need to be a Dyn Prog problem better done in top-down
+(recursively). (A bottom-up dyn prog) would typically have a very
+regular structure.  Maybe RNA pseudoknots folding. It's $n^3$
+computation on $n^2$ data. So on large RNA, you can't store the entire
+array.
+
+A problem in there is that implementing Recursive Dyn Prog on GPUs is
+quite difficult.
+
+\paragraph{Sparse Linear algebra}
+Maybe in sparse linear algebra. SpMM could be a kernel to pay
+attention to. The matrix fits in memory but the whole right hand side
+dense matrix doesn't. In many applicatino you can control how many
+right hand side vector you do. But maybe you can derive more
+performance by over subscribing. 
+
+\paragraph{Graph with meta data}
+An application that has a graph that maybe is even not that large, but
+the vertices and edges have some meta data attached to them. And
+overall the data doesn't fit in GPU memory. Because calculation
+usually follow the topology of the graph, the exact access pattern is
+hard to predict.
+
+SPARQL on knowledge graph would be one idea.
+
+Embedding graph in high dimension would be an other kind of
+applicatoin. Maybe the embedding or maybe the queries themselves?
+
+Computing/evaluating GNNs would have that kind of structure.
+
+
 \end{document}
