@@ -104,7 +104,7 @@ def key_perf(machine):
     return [peak_flops, gpu_bw, interconnect_bw, uvm_bw]
     
     
-machine='cci-hopper2'    
+machine=sys.argv[1]
     
 codes = ['gpu_pinned', 'gpu_basic', 'gpu_uvm_basic', 'gpu_stream']
 

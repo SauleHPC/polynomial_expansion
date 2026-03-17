@@ -1,0 +1,320 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\begin{document}
+
+\section{Introduction}
+
+We are trying to understand the cost of uvm hmm on a range of
+scenario. We'll look at a simple application to have a sense of the
+impact of arithmetic intensity.
+
+The assumption that we are trying to confirm is that essentially UVM
+and HMM give you normal processing but at lower interconnect speed.
+
+\section{Polynomial Expansion}
+
+\subsection{Problem}
+
+You have a bunch of points $x_0, \dots, x_n$. For each you want to compute a polynomial $P(x) = \sum_{i=0}^d c_i x^i$.
+
+Note the calculation is in $\Theta(n(d+1))$, it moves $\Theta(n+d)$ memory and do $\Theta(n(d+1))$ flops.
+
+\subsection{cpu implementation}
+
+two implems.
+
+one sequential
+
+one openmp
+
+\subsection{cuda implementation}
+
+Basic implementation is pretty much what you think it is. Init on CPU,
+alloc array for x and coefficients on the gpu. Cuda memcpy the data
+over. A cuda kernel, one cuda thread per entry in the array who does
+$d+1$ muls and adds. Memcopy results back.
+
+The pinned implementation is the same. But the CPU memory is allocated
+in page-locked memory. So the cudamemcopy is faster.
+
+The stream implementation aims to get communiucation comptation
+overlap. It splits the calculation in a number of streams. Each stream
+processes many chunks of a fixed size. The stream does memcopy data
+in, launch kernel, memcpy data back.
+
+The UVM implementation allocs the memory with cudamallocmanaged which
+makes the memory managed by the uvm driver. Becasue we get gpu side
+paging, there is no memcopy, the kernel work straight out of the memory.
+
+The basic and pinned implementations are naturally limited to GPU
+memory. While the stream and UVM implementation can process more data
+than the GPU can hold.
+
+\section{Modeling}
+
+\subsection{A steady state model}
+
+The problem is essentially 3 phased. move data in, do the calculation,
+move data out. The move data in and out are happening on the
+interconnect (pci-e or nvlink). The calculation itself has two main
+components, how much data you need to move (roughly $\Theta(n)$) and
+how much computation you do $\Theta(nd)$. The runtime of the kernel
+itself will be defined by the bottleneck which could be either data or
+flops: $max(\frac{2n(d+1)}{gpuflops},
+\frac{2n*sizefp32}{gpumembw})$. Moving data in and out of the gpu is
+given by the time to transfer over the interconnect
+$\frac{(n+d+1)sizefp32}{interconnectBW}$
+
+Depending on the implementation you get communication/computation
+overlap or not. If you do get communication/computation overlap, the
+runtime is given by the maximum between communication time and computation time:
+
+$max(max(\frac{2n(d+1)}{gpuflops}, \frac{2n*sizefp32}{gpumembw}),\frac{(n+d+1)sizefp32}{interconnectBW})$
+
+But if there is no overlap then the two happen one after the other and
+the application time is
+
+$max(\frac{2n(d+1)}{gpuflops}, \frac{2n*sizefp32}{gpumembw}) +
+\frac{(n+d+1)sizefp32}{interconnectBW}$
+
+\subsection{Modeling limitation}
+
+That model is quite flawed. It assumes that calculation enters steady
+states and so that you actually do reach a bandwidth style bottleneck
+on one of the ressource.  It assumes there is no complex interaction
+in the system that cause chain of event delays in the calculation.
+
+That assumption is probably reasonnable at large scale, the
+experimental results will confirm that.
+
+At smaller scale (smaller $n$ values) than there should be a lot more
+latency effects.
+
+\subsection{Calibrating}
+
+To use the models we'll to calibrate the flops and banwidth ratings.
+
+We'll use actual measurement from the code to calibrate. We will
+calibrate flops using a gpu only measurement for a run with a large
+degree and derive flops from that. For gpubw, we take a measurement
+with degree 0 and large $n$. And for interconnect measurment we take a
+total overlapped execution with degree 0 and large $n$.
+
+\section{Experiments}
+
+We ran on a bunch of different machines. Here are some results on
+hopper 1 and hopper 2.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=5]{analysis-cci-hopper1.pdf}
+    \caption{Hopper1, n=16B (non-oversubscribed)}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=5]{analysis-cci-hopper2.pdf}
+    \caption{Hopper2, n=16B (non-oversubscribed)}
+  \end{subfigure}
+
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=7]{analysis-cci-hopper1.pdf}
+    \caption{Hopper1, n=64B (oversubscribed)}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=6]{analysis-cci-hopper2.pdf}
+    \caption{Hopper2, n=64B (oversubscribed)}
+  \end{subfigure}
+
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=13]{analysis-cci-hopper1.pdf}
+    \caption{Hopper1, d=1024}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,page=12]{analysis-cci-hopper2.pdf}
+    \caption{Hopper2, d=1024}
+  \end{subfigure}
+
+  \label{fig:perf-hopper}
+  \caption{perf results on Hopper GPUs, hopper1 is x86 cpu side; hopper2 is grace.}
+\end{figure}
+
+Figure~\label{fig:perf-hopper} presents results on hopper gpus with an
+grace/nvlink configuration and a x86/pcie configuration. We present
+all performance in flops for normalization. We present both the
+performance a prediction of that performance based on the model
+described above.
+
+Some observations:
+
+The models are fairly accurate. Rarely more than 15\% off. They are
+only off on really small arrays; which make sense the size are
+probably not high enough to saturate any part of the system so you get
+latency effects and a steady state model becomes wrong.
+
+The fact that the model is accurate means that the difference in
+performance between \texttt{gpu\_uvm} and \texttt{gpu\_stream} is
+mostly explained by the difference in effective interconnect bandwidth
+experienced by UVM.
+
+With densification of arithmetic intensity, the difference between UVM
+and stream decreases and it eventually decreases to essentially no
+difference at a degree of 4098; so at 8192 flops per FP32 float; or at
+2048 flops per byte
+
+You can measure the difference in arithmetic intensity for different
+memory management model. While stream saturates gpu flops at roughly
+degree 256, you need roughly 4098 to saturate with UVM.
+
+You can see that at small $n$ values, the model is less accurate. This
+is most likely an effect of
+
+What's going on with pageable memory speed? No idea.
+
+It is interesting that we see that the peak flop performance is about
+the same between hopper1 and hopper 2. But hopper 2 show more
+performance in its interconnect, which we expect since nvlink.
+
+We also see that there is no real performance cost to
+oversubscription, the calculation is interconnect bound but the
+bandwidth is used just as effectively in undersubscribed and over
+subscribed cases.
+
+\section{Discussion}
+
+\subsection{UVM is not a good option for steam type applications}
+
+Polynomial expansion is a decent representative for all kind of
+streaming applications. By streaming application, we mean applications
+with very simple data access pattern. Data come in, some calculation
+is done, data come out; and is never seen again.
+
+On these applications, UVM will perform well in both undersubscribed
+and oversubscribed cases as long as the arithmetic intensity of the
+calculation is high enough to overlap the slower memory access times.
+
+Though there is no real benefit to UVM here. UVM is often quoted as
+being simpler to write than explicit memory management. But the
+implementation in different cuda streams is not much more
+complicated. And most likely, the implementation will use a middleware
+like OpenMP or Kokkos. Even if writing raw cuda, any LLM will surely
+one shot this as it is a textbook technique really.
+
+If the application was a bit more complicated. Maybe composed of a
+sequence of kernels in between the memcopies like some computational
+pipeline. In undersubscribed cases, that should perform about the same
+as a single kernel like polynomial expansion.  But in an
+oversubscribed case, the data would flow multiple times in the CUDA
+cores, and since the dataset does not fit in GPU memory, it will all
+be accessed from the host each time. This would be significantly
+slower than a stream based implementation.
+
+\subsection{What would an application need to be like for UVM to make sense}
+
+The access pattern in polynomial expansion is so simple that it is
+accesses all the data in a quite regular pattern. So it is easy for
+the programmer to decompose the problem in chunks that can be
+streamed. But even for problems that are not that regular, the
+streaming codes should still easily be implemented.
+
+Consider dense matrix-matrix multiplication (gemm). The data is used
+multiple times but the pattern is well understood. Even in an
+oversubscribed setting, you can use tile or striped implementation of
+gemm and leverage cuda streams to overlap the data transfer and the
+computation. And yes, maybe you would need a more careful task graph
+based approach to the problem to derive the most performance. But
+regardless UVM would not be a good solution for performance without
+some smarter scheduling of the calculation.
+
+So what remains? For undersubscribed cases, all applications where
+possibly not all the data will be accessed and it is non trivial to
+know which data will be accessed. For oversubscribed cases, the data
+access has to be irregular and possibly hard to predict.
+
+\subsection{Some idea of use cases}
+
+\paragraph{BFS in a large graph}
+The graph is larger than memory, you want to do BFS to find a path to
+a particular vertex. Once that vertex is found, you can abort the
+BFS. In an application like this, you would not use the whole
+graph. So even if the graph fits in memory, you don't need to bring the
+whole graph. If the graph is bigger than memroy, then this even
+applies on repeated queries.
+
+There is not much a explicit memory managed implementation can do
+here. To figure out which piece of the graph will be relevant, you
+kind of need to do BFS.
+
+\paragraph{Local graph computation}
+Some graph queries are essentially very localized in the graph. Think
+of locrank from the advisor's papers with Haofeng. You have a graph,
+you get a query as some of the vertices of the graph and you want to
+do a biased page rank where teleport probability is only distributed
+to query vertices. We showed that you can essentially only consider
+the vertices within a fixed distance from te query (within 2 hops).
+
+In an oversubscribed setting, the only reasonnable solution would be
+to have a pre-partitioned graph and only load the parts with the
+queries are. You would probably also need the neighboring parts. The
+parts can't be that small or you would get very little reuse and
+patching the graphs back would be pretty costly.
+
+Also closeness/betweenness? As you go through the graph in layers, you
+don't know where the vertices will fall, so it is hard to
+predict. Also in betwenness the sigma, delta, and distance vectors are
+used in wave pattern that could be good for memory locality.
+
+\paragraph{Cache}
+Any application where you are computing something but some of the
+values are precomputed and cached to avoir recomputation would have
+possibly this type of structure. If the cache and the data computed
+both need to fit in gpu memory, then this limits the problem size you
+can do. So one might prefer storing them in UVM memory so that the
+cache get dynamically loaded in GPU memory.
+
+There are two kinds applications I think about here. I'm thinking
+physics calculatino where you assemble values from small
+parts. Something like MFDn phase 1.
+
+Something else might be dynamic programming applications.  It also
+need to be a Dyn Prog problem better done in top-down
+(recursively). (A bottom-up dyn prog) would typically have a very
+regular structure.  Maybe RNA pseudoknots folding. It's $n^3$
+computation on $n^2$ data. So on large RNA, you can't store the entire
+array.
+
+A problem in there is that implementing Recursive Dyn Prog on GPUs is
+quite difficult.
+
+\paragraph{Sparse Linear algebra}
+Maybe in sparse linear algebra. SpMM could be a kernel to pay
+attention to. The matrix fits in memory but the whole right hand side
+dense matrix doesn't. In many applicatino you can control how many
+right hand side vector you do. But maybe you can derive more
+performance by over subscribing. 
+
+\paragraph{Graph with meta data}
+An application that has a graph that maybe is even not that large, but
+the vertices and edges have some meta data attached to them. And
+overall the data doesn't fit in GPU memory. Because calculation
+usually follow the topology of the graph, the exact access pattern is
+hard to predict.
+
+SPARQL on knowledge graph would be one idea.
+
+Embedding graph in high dimension would be an other kind of
+applicatoin. Maybe the embedding or maybe the queries themselves?
+
+Computing/evaluating GNNs would have that kind of structure.
+
+
+\end{document}
