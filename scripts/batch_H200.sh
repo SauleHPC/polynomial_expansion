@@ -3,10 +3,10 @@
 #SBATCH --nodes=1
 #SBATCH --time=36:00:00
 #
-#SBATCH --ntasks-per-node=32
-#SBATCH --gres=gpu:A40:1
-#SBATCH --mem=220G
-#SBATCH --nodelist=str-gpu15
+#SBATCH --ntasks-per-node=128
+#SBATCH --gres=gpu:H200:1
+#SBATCH --mem=700G
+#SBATCH --nodelist=str-gpu30
 
 cd ~/polynomial_expansion/scripts/
 
